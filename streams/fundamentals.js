@@ -1,4 +1,4 @@
-import { Readable } from 'node:stream';
+import { Readable, Writable } from 'node:stream';
 
 class OneToHundredStream extends Readable {
   index = 1;
@@ -16,6 +16,14 @@ class OneToHundredStream extends Readable {
   }
 }
 
-// --- A PARTE QUE FALTA ---
+class MultiplyByTenStream extends Writable {
+  _write(chunk, encoding, callback) {
+    console.log(Number(chunk.toString() * 10));
+    callback();
+  }
+}
+
 new OneToHundredStream() // 1. Cria a instância da stream
-  .pipe(process.stdout); // 2. Redireciona os dados para o Terminal (stdout)
+  .pipe(new MultiplyByTenStream()); // 2. Está lendo e escrevendo alterações.
+
+// 3. o pipe() é o intermediário
